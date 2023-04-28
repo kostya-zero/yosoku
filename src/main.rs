@@ -1,5 +1,5 @@
 use clap::Command;
-use config::Manager;
+use config::{Manager, Config};
 
 use crate::{config::{Units, ForecastView}, api::API};
 
@@ -27,6 +27,25 @@ fn cli() -> Command {
         ])
 }
 
+fn build_options(conf: &Config) -> String {
+    let mut options_str: String = "".to_string();
+    let mode = match &conf.forecast_view {
+        Some(ForecastView::detailed) => "",
+        Some(ForecastView::quite) => "q",
+        Some(ForecastView::super_quite) => "Q",
+        _ => ""
+    };
+
+    let metric = match &conf.units {
+        Some(Units::us) => "u",
+        Some(Units::metric) => "M",
+        _ => "M"
+    };
+
+    options_str = options_str + mode + metric + "&lang=" + &conf.language.clone().expect("Failed to get language from config.").to_string();
+    return options_str;
+}
+
 fn main() {
     let args = cli().get_matches();
     match args.subcommand() {
@@ -34,24 +53,9 @@ fn main() {
             let conf = Manager::read_config();
             // println!("{:?}", conf); 
             let mut uri: String = "https://wttr.in/".to_string();
-
-            uri = uri + &conf.location.expect("Failed to get location from config.") + "?0AF";
-
-            let mode = match &conf.forecast_view {
-                Some(ForecastView::detailed) => "",
-                Some(ForecastView::minimalist) => "q",
-                Some(ForecastView::super_minimalist) => "Q",
-                _ => ""
-            };
-            
-            let metric = match &conf.units {
-                Some(Units::us) => "u",
-                Some(Units::metric) => "M",
-                _ => "M"
-            };
-
-            uri = uri + mode + metric;
-            uri = uri + "&lang=" + &conf.language.expect("Failed to get language from config.").to_string();
+            uri = uri + &conf.location.clone().expect("Failed to get location from config.") + "?0AF";
+            let req_opts: String = build_options(&conf);
+            uri = uri + &req_opts;
 
             let result = API::send(&uri);
             println!("{}", result);
@@ -60,24 +64,9 @@ fn main() {
             let conf = Manager::read_config();
             // println!("{:?}", conf); 
             let mut uri: String = "https://wttr.in/".to_string();
-
-            uri = uri + &conf.location.expect("Failed to get location from config.") + "?1FA";
-
-            let mode = match &conf.forecast_view {
-                Some(ForecastView::detailed) => "",
-                Some(ForecastView::minimalist) => "q",
-                Some(ForecastView::super_minimalist) => "Q",
-                _ => ""
-            };
-            
-            let metric = match &conf.units {
-                Some(Units::us) => "u",
-                Some(Units::metric) => "M",
-                _ => "M"
-            };
-
-            uri = uri + mode + metric;
-            uri = uri + "&lang=" + &conf.language.expect("Failed to get language from config.");
+            uri = uri + &conf.location.clone().expect("Failed to get location from config.") + "?1AF";
+            let req_opts: String = build_options(&conf);
+            uri = uri + &req_opts;
 
             let result = API::send(&uri);
             println!("{}", result);
@@ -87,23 +76,9 @@ fn main() {
             // println!("{:?}", conf); 
             let mut uri: String = "https://wttr.in/".to_string();
 
-            uri = uri + &conf.location.expect("Failed to get location from config.") + "?2FA";
-
-            let mode = match &conf.forecast_view {
-                Some(ForecastView::detailed) => "",
-                Some(ForecastView::minimalist) => "q",
-                Some(ForecastView::super_minimalist) => "Q",
-                _ => ""
-            };
-            
-            let metric = match &conf.units {
-                Some(Units::us) => "u",
-                Some(Units::metric) => "M",
-                _ => "M"
-            };
-
-            uri = uri + mode + metric;
-            uri = uri + "&lang=" + &conf.language.expect("Failed to get language from config.");
+            uri = uri + &conf.location.clone().expect("Failed to get location from config.") + "?2FA";
+            let req_opts: String = build_options(&conf);
+            uri = uri + &req_opts;
 
             let result = API::send(&uri);
             println!("{}", result);
@@ -113,23 +88,9 @@ fn main() {
             // println!("{:?}", conf); 
             let mut uri: String = "https://wttr.in/".to_string();
 
-            uri = uri + &conf.location.expect("Failed to get location from config.") + "?AF";
-
-            let mode = match &conf.forecast_view {
-                Some(ForecastView::detailed) => "",
-                Some(ForecastView::minimalist) => "q",
-                Some(ForecastView::super_minimalist) => "Q",
-                _ => ""
-            };
-            
-            let metric = match &conf.units {
-                Some(Units::us) => "u",
-                Some(Units::metric) => "M",
-                _ => "M"
-            };
-
-            uri = uri + mode + metric;
-            uri = uri + "&lang=" + &conf.language.expect("Failed to get language from config.");
+            uri = uri + &conf.location.clone().expect("Failed to get location from config.") + "?AF";
+            let req_opts: String = build_options(&conf);
+            uri = uri + &req_opts;
 
             let result = API::send(&uri);
             println!("{}", result);

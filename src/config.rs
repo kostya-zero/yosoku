@@ -14,8 +14,8 @@ pub enum Units {
 #[derive(Serialize, Deserialize, Debug)]
 pub enum ForecastView {
     detailed,
-    minimalist,
-    super_minimalist
+    quite,
+    super_quite
 }
 
 #[derive(Serialize, Deserialize, Debug)]
